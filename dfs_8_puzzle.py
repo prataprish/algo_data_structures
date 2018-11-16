@@ -11,9 +11,9 @@ def swapped(arr,init,end):
     arr[init],arr[end] = arr[end],arr[init]
     return arr
 
-class boardMap:
+class boardMap: #tree containing possible solutions
 
-    class node:
+    class node: #node structure for tree
 
         def __init__(self,config,parent=None):
             self.size = len(config)
@@ -22,19 +22,13 @@ class boardMap:
             else:
                 self.game = True
                 self.config = config
-                cost = 0
-                a = { 0:[0,0],1:[0,1],2:[0,2],3:[1,0],4:[1,1],5:[1,2],6:[2,0],7:[2,1],8:[2,2] }
-                for i in range(1,9):
-                    pos = self.config.index(i)
-                    cost += abs(a[i][1] - pos%3) + abs(a[i][0] - int(pos/3))
-                self.cost = cost
                 self.parent = parent
                 self.depth = 0
                 self.moves = []
                 self.children = []
                 self.parent = None
                 self.parentMove = None
-                pos = self.config.index(0)
+                pos = self.config.index(0) # choose priority for moves
                 if pos > -1:
                     if pos not in [ 0,1,2 ]:
                         (self.moves).append({ 'move':'UP','value':-3 })
@@ -92,7 +86,7 @@ class boardMap:
                     ans['path_to_goal'] = list(reversed(path))
                     ans['nodes_expanded'] = self.cost
                     ans['cost_of_path'] = cost
-                    ans['running_time'] = time.time() - start
+                    ans['running_time'] = time.time() - start #running time ends
                     ans['max_search_depth'] = self.depth
                     return ans
             a.moves.reverse()
@@ -100,8 +94,8 @@ class boardMap:
 
 
 
-state = [1,2,3,4,5,0,6,7,8]
-start = time.time()
+state = [1,2,3,4,5,0,6,7,8] #state of game
+start = time.time() #running time starts
 ram = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 game = boardMap(state)
 ans = None
