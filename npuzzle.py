@@ -1,9 +1,4 @@
-import sys
 import math
-import copy
-import time
-import os
-import resource
 
 
 def swapped(arr,init,end):
@@ -17,33 +12,29 @@ class boardMap:
 
         def __init__(self,config,n,parent=None):
             self.size = len(config)
-            if (math.sqrt(self.size) - round(math.sqrt(self.size)) != 0) or (math.sqrt(self.size) < 2) or (sorted(config) != list(range(0,self.size))):
-                self.game = False
-            else:
-                self.game = True
-                m = int(math.sqrt(n))
-                self.config = config
-                cost = 0
-                for i in range(1,n):
-                    pos = self.config.index(i)
-                    cost += abs(i%m - pos%m) + abs(int(i/m) - int(pos/m))
-                self.cost = cost
-                self.parent = parent
-                self.depth = 0
-                self.moves = []
-                self.children = []
-                self.parent = None
-                self.parentMove = None
-                pos = self.config.index(0)
-                if pos > -1:
-                    if pos not in list(range(0,m)):
-                        (self.moves).append({ 'move':'UP','value':-m })
-                    if pos not in list(range(n-m-1,n)):
-                        (self.moves).append({ 'move':'DOWN','value':m })
-                    if pos not in list(range(0,n,m)):
-                        (self.moves).append({ 'move':'LEFT','value':-1 })
-                    if pos not in list(range(m-1,n,m)):
-                        (self.moves).append({ 'move':'RIGHT','value':1 })
+            m = int(math.sqrt(n))
+            self.config = config
+            cost = 0
+            for i in range(1,n):
+                pos = self.config.index(i)
+                cost += abs(i%m - pos%m) + abs(int(i/m) - int(pos/m))
+            self.cost = cost
+            self.parent = parent
+            self.depth = 0
+            self.moves = []
+            self.children = []
+            self.parent = None
+            self.parentMove = None
+            pos = self.config.index(0)
+            if pos > -1:
+                if pos not in list(range(0,m)):
+                    (self.moves).append({ 'move':'UP','value':-m })
+                if pos not in list(range(n-m-1,n)):
+                    (self.moves).append({ 'move':'DOWN','value':m })
+                if pos not in list(range(0,n,m)):
+                    (self.moves).append({ 'move':'LEFT','value':-1 })
+                if pos not in list(range(m-1,n,m)):
+                    (self.moves).append({ 'move':'RIGHT','value':1 })
 
 
     def insertChildren(self,tree,pre,stack,n,fontier=None,action=None):
@@ -84,34 +75,24 @@ class boardMap:
             fontier.pop(action)
             if a != None:
                 if a.config == list(range(0,n)):
-                    ans = { }
                     cost = 0
                     path = []
-                    ans['max_search_depth'] = self.depth
                     while a != self.root:
                         cost = cost + 1
                         path.append(a.parentMove)
                         a = a.parent
-                    ans['path_to_goal'] = list(reversed(path))
-                    ans['nodes_expanded'] = self.cost
-                    ans['cost_of_path'] = cost
-                    ans['running_time'] = time.time() - start
+                    ans = list(reversed(path))
                     return ans
             action = self.insertChildren(a,self.maps,stack,n,fontier,action)
 
 
-
-state = [8,6,4,2,1,3,5,7,0 ]
-start = time.time()
-ram = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-game = boardMap(state,9)
+n = int(input())
+state = []
+for i in range(n*n):
+    state.append(int(input()))
+game = boardMap(state,n*n)
 ans = None
-if(game.root.game == True):
-    
-    ans = game.astar(9)
-
-    print(ans)
-
-
-else:
-    print('Game not initialised')
+ans = game.astar(n*n)
+print(len(ans))
+for i in ans:
+    print(i)
